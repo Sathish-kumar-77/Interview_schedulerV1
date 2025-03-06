@@ -5,13 +5,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Assignment.Migrations.Migrations
 {
-    public partial class InitialCreate11 : Migration
+    public partial class InitialCreate1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "App");
-
             migrationBuilder.CreateTable(
                 name: "Roles",
                 columns: table => new
@@ -26,7 +23,7 @@ namespace Assignment.Migrations.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "User",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "INTEGER", nullable: false)
@@ -37,7 +34,29 @@ namespace Assignment.Migrations.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "TEXT", maxLength: 255, nullable: false),
+                    RoleId = table.Column<int>(type: "INTEGER", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                    table.ForeignKey(
+                        name: "FK_Users_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,9 +71,9 @@ namespace Assignment.Migrations.Migrations
                 {
                     table.PrimaryKey("PK_PanelMembers", x => x.PanelMemberId);
                     table.ForeignKey(
-                        name: "FK_PanelMembers_Users_UserId",
+                        name: "FK_PanelMembers_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -69,9 +88,9 @@ namespace Assignment.Migrations.Migrations
                 {
                     table.PrimaryKey("PK_ReportingManagers", x => x.UserId);
                     table.ForeignKey(
-                        name: "FK_ReportingManagers_Users_UserId",
+                        name: "FK_ReportingManagers_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -88,9 +107,9 @@ namespace Assignment.Migrations.Migrations
                 {
                     table.PrimaryKey("PK_TAAdmins", x => x.TAAdminId);
                     table.ForeignKey(
-                        name: "FK_TAAdmins_Users_UserId",
+                        name: "FK_TAAdmins_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -107,9 +126,9 @@ namespace Assignment.Migrations.Migrations
                 {
                     table.PrimaryKey("PK_TARecruiters", x => x.TARecruiterId);
                     table.ForeignKey(
-                        name: "FK_TARecruiters_Users_UserId",
+                        name: "FK_TARecruiters_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -135,9 +154,9 @@ namespace Assignment.Migrations.Migrations
                         principalColumn: "PanelMemberId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_PanelCoordinators_Users_UserId",
+                        name: "FK_PanelCoordinators_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Users",
+                        principalTable: "User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -255,6 +274,11 @@ namespace Assignment.Migrations.Migrations
                 name: "IX_TARecruiters_UserId",
                 table: "TARecruiters",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_RoleId",
+                table: "Users",
+                column: "RoleId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -263,13 +287,13 @@ namespace Assignment.Migrations.Migrations
                 name: "PanelCoordinators");
 
             migrationBuilder.DropTable(
-                name: "Roles");
-
-            migrationBuilder.DropTable(
                 name: "Slots");
 
             migrationBuilder.DropTable(
                 name: "TAAdmins");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Candidates");
@@ -281,27 +305,13 @@ namespace Assignment.Migrations.Migrations
                 name: "TARecruiters");
 
             migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
                 name: "ReportingManagers");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.CreateTable(
-                name: "App",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    AddedOn = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    Description = table.Column<string>(type: "Price", nullable: false),
-                    Developer = table.Column<string>(type: "TEXT", nullable: false),
-                    Name = table.Column<string>(type: "TEXT", nullable: false),
-                    Type = table.Column<string>(type: "TEXT", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_App", x => x.Id);
-                });
+                name: "User");
         }
     }
 }

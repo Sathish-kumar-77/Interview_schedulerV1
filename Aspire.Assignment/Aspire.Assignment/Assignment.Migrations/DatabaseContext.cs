@@ -20,7 +20,7 @@ namespace Assignment.Migrations
             return base.SaveChangesAsync(cancellationToken);
         }
 
-         public DbSet<User> Users { get; set; }
+         public DbSet<Users> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<ReportingManager> ReportingManagers { get; set; }
         public DbSet<Candidate> Candidates { get; set; }

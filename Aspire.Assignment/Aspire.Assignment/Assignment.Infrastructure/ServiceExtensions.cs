@@ -14,6 +14,7 @@ namespace Assignment.Infrastructure
         private static IServiceCollection AddUnitOfWork(this IServiceCollection services)
         {
             return services.AddScoped<IUnitOfWork, UnitOfWork>();
+            
         }
 
         private static IServiceCollection AddDatabaseContext(this IServiceCollection services, IConfiguration configuration)
@@ -26,6 +27,7 @@ namespace Assignment.Infrastructure
 
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
+            services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             return services.AddDatabaseContext(configuration).AddUnitOfWork();
         }

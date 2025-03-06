@@ -206,6 +206,37 @@ namespace Assignment.Migrations.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("Assignment.Contracts.Data.Entities.Users", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId");
+
+                    b.HasIndex("RoleId");
+
                     b.ToTable("Users");
                 });
 
@@ -314,6 +345,17 @@ namespace Assignment.Migrations.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Assignment.Contracts.Data.Entities.Users", b =>
+                {
+                    b.HasOne("Assignment.Contracts.Data.Entities.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Assignment.Contracts.Data.Entities.Candidate", b =>
