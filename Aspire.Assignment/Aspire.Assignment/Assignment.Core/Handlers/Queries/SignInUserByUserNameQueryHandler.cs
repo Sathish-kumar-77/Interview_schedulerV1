@@ -68,7 +68,6 @@ namespace Assignment.Providers.Handlers.Queries
               var token= tokenHandler.CreateToken(tokenDescriptor);
               return token == null ? throw new EntityNotFoundException($"Faild to generate the token") : tokenHandler.WriteToken(token) ;
         }
-
      
     }
 }

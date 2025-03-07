@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Assignment.Contracts.DTO;
 using Assignment.Core.Exceptions;
 using Assignment.Core.Handlers.Commands;
+using Assignment.Core.Handlers.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +22,11 @@ public class PanelCoordinatorController : ControllerBase
             _mediator = mediator;
         }
 
-        // Endpoint for POST /api/Pa    nelCoordinator/PostDate
+        // Endpoint for POST /api/PanelCoordinator/PostDate
         [HttpPost("AllocateDate")]
         // Action method to allocate dates
         //[Authorize(Roles = "Panel Coordinator")]
-        public async Task<IActionResult> PostDate([FromBody] List<AllocateDateDTO> model)
+        public async Task<IActionResult> AllocateDate([FromBody] List<AllocateDateDTO> model)
         {
             try
             {
@@ -58,5 +59,22 @@ public class PanelCoordinatorController : ControllerBase
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("PanelAllocations")]
+        //  [Authorize(Roles = "Panel Coordinator")]
+        public async Task<IActionResult> GetAllAllocatedate()
+        {
+            var query = new GetAllAllocateDateQuery();
+            
+            var dates = await _mediator.Send(query);
+            
+            if (dates == null || !dates.Any())
+            {
+               
+                return BadRequest("No allocated dates found.");
+            }
+            
+            return Ok(dates);
         }
     }
