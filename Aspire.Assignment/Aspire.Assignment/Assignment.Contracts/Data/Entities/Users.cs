@@ -10,20 +10,21 @@ public class Users
 [Key]
         public int UserId { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        
         public string ?Name { get; set; }
 
-        [Required]
-        [MaxLength(100)]
         public string ?Email { get; set; }
 
-        [Required]
-        [MaxLength(255)]
         public string ?Password { get; set; }
 
-        [Required]
+        public string Designation { get; set; }
+
+        public string ReportingManager  { get; set; }
+
         [ForeignKey("Role")]
         public int RoleId { get; set; }
         public Role ?Role { get; set; }
+
+        public ICollection<Slot> Slots { get; set; }
+        public ICollection<Interview> Interviews { get; set; }
 }

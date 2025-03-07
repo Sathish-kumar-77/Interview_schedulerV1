@@ -20,6 +20,10 @@ namespace Assignment.Core.Data
 
         public IUsersRepository Users => new UsersRepository(_context);
 
+        public IAllocatedateRepository AllocateDate => new AllocatedateRepository(_context);
+
+        public IPanelCoordinatorRepository PanelCoordinator => new PanelCoordinatorRepository(_context);
+
         public async Task CommitAsync()
         {
             await _context.SaveChangesAsync();

@@ -14,6 +14,9 @@ public class UsersDTO
 
         
         public string Password { get; set; }
+        public string Designation { get; set; }
+
+        public string ReportingManager  { get; set; }
 
         public int RoleId { get; set; }
 }

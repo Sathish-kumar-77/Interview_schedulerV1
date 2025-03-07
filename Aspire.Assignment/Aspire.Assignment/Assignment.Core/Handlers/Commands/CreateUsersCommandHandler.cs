@@ -52,6 +52,8 @@ public class CreateUsersCommand : IRequest<int>
                 UserId = model.UserId,
                 Name = model.Name,
                 Email = model.Email,
+                ReportingManager = model.ReportingManager,
+                Designation = model.Designation,
                 Password = model.Password,
                 RoleId = model.RoleId,
 

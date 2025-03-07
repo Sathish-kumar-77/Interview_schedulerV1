@@ -6,7 +6,7 @@ namespace Assignment.Core.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly DatabaseContext _context;
+        protected readonly DatabaseContext _context;
         private readonly DbSet<T> _dbSet;
 
         public Repository(DatabaseContext context)

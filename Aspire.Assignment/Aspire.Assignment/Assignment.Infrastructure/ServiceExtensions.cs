@@ -27,8 +27,8 @@ namespace Assignment.Infrastructure
 
         public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
+            services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
             return services.AddDatabaseContext(configuration).AddUnitOfWork();
         }
     }
