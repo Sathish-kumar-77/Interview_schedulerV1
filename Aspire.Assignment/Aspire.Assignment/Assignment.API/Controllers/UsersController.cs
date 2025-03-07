@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Security.Claims;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Assignment.Contracts.DTO;
 using Assignment.Core.Exceptions;
@@ -31,16 +32,7 @@ namespace Assignment.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<UserDTO>), (int)HttpStatusCode.OK)]
-        [ProducesErrorResponseType(typeof(BaseResponseDTO))]
-        [Authorize]
-        public async Task<IActionResult> Get()
-        {
-            var query = new GetAllUserQuery();
-            var response = await _mediator.Send(query);
-            return Ok(response);
-        }
+        
 
         [HttpPost]
         [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
@@ -61,13 +53,13 @@ namespace Assignment.Controllers
                 };
                 var token = tokenHandler.CreateToken(tokenDescriptor);
 
-                // Return the user and token in the response
+                
                 return Ok(new
                 {
                     user = model,
                     token = tokenHandler.WriteToken(token)
                 });
-                //return StatusCode((int)HttpStatusCode.Created, response);
+                
             }
             catch (InvalidRequestBodyException ex)
             {
@@ -79,26 +71,48 @@ namespace Assignment.Controllers
             }
         }
 
-        [HttpGet]
-        [Route("{id}")]
-        [ProducesResponseType(typeof(UserDTO), (int)HttpStatusCode.OK)]
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
         [ProducesErrorResponseType(typeof(BaseResponseDTO))]
-        public async Task<IActionResult> GetByUserName(string userName)
+        public async Task<IActionResult> DeleteUser(int userId)
         {
-            try
+            var result = await _mediator.Send(new DeleteUserCommand(userId));
+
+            if (!result)
             {
-                var query = new GetUserByUserNameQuery(userName);
-                var response = await _mediator.Send(query);
-                return Ok(response);
+                return NotFound(new { message = "User not found." });
             }
-            catch (EntityNotFoundException ex)
-            {
-                return NotFound(new BaseResponseDTO
-                {
-                    IsSuccess = false,
-                    Errors = new string[] { ex.Message }
-                });
-            }
+
+            return Ok(new { message = "User deleted successfully." });
         }
+    
+    [HttpPut("{userId}")]
+    [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
+        [ProducesErrorResponseType(typeof(BaseResponseDTO))]
+        public async Task<IActionResult> UpdateUser(int userId, [FromBody] UpdateUsersDTO model)
+        {
+            var result = await _mediator.Send(new UpdateUserCommand(userId, model));
+
+            if (!result)
+            {
+                return NotFound(new { message = "User not found." });
+            }
+
+            return Ok(new { message = "User updated successfully." });
+        }
+
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers(CancellationToken cancellationToken)
+        {
+            var users = await _mediator.Send(new GetAllUsersQuery(), cancellationToken);
+            if (users == null)
+                return NotFound("No users found.");
+
+            return Ok(users);
+        }
+    
+
     }
 }
+    
