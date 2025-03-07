@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Assignment.Contracts.Data.Repositories;
 using Assignment.Migrations;
+using System.Linq.Expressions;
 
 namespace Assignment.Core.Data.Repositories
 {
@@ -36,6 +37,11 @@ namespace Assignment.Core.Data.Repositories
                 }
                 _dbSet.Remove(entity);
             }
+        }
+
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).ToList();
         }
 
         public T Get(object id)
