@@ -9,7 +9,10 @@ namespace Assignment.Core.Mapper
         public AutoMapperProfile()
         {
             CreateMap<App, AppDTO>();
-            CreateMap<User, UserDTO>();
+            CreateMap<Users, UsersDTO>();
+            CreateMap<UpdateUsersDTO, Users>()
+                .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
+        }
         }
     }
-}
+
