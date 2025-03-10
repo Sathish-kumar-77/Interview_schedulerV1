@@ -10,10 +10,10 @@ namespace Assignment.Core.Handlers.Queries;
 
 public class GetSlotByIdQuery : IRequest<IEnumerable<SlotDetailsDTO>>
 {
-    public int UserId {get;}
-    public GetSlotByIdQuery(int userId)
+    public string Name {get;}
+    public GetSlotByIdQuery(string name)
     {
-        UserId = userId;
+        Name = name;
         
     }
 }
@@ -31,10 +31,10 @@ public class GetSlotByIdQueryHandler : IRequestHandler<GetSlotByIdQuery, IEnumer
     }
     public async Task<IEnumerable<SlotDetailsDTO>> Handle(GetSlotByIdQuery request, CancellationToken cancellationToken)
     {
-        var user = await Task.FromResult(_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserId == request.UserId));
+        var user = await Task.FromResult(_unitOfWork.Users.GetAll().FirstOrDefault(u => u.Name == request.Name));
         if (user == null)
             {
-                throw new EntityNotFoundException($"No USER found for {request.UserId}");
+                throw new EntityNotFoundException($"No USER found for {request.Name}");
             }
 
         var slots = await _unitOfWork.Slot.GetSlotByUserId(user.UserId);

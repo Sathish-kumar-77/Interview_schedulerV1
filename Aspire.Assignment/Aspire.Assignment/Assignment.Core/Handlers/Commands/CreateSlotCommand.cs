@@ -22,9 +22,9 @@ public class CreateSlotCommandHandler : IRequestHandler<CreateSlotCommand, strin
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<SlotDetailsDTO> _validator;
 
-    public CreateSlotCommandHandler(IUnitOfWork unitOfWork)
+    public CreateSlotCommandHandler(IUnitOfWork unitOfWork, IValidator<SlotDetailsDTO> validator)
     {
-
+        _validator = validator;
         _unitOfWork = unitOfWork;
 
     }

@@ -5,6 +5,7 @@ namespace Assignment.Contracts.DTO;
 
 public class SlotDetailsDTO
 {
+
         public int SlotId { get; set; }
 
         public DateTime Date { get; set; }

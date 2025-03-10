@@ -24,6 +24,7 @@ public class PanelCoordinatorController : ControllerBase
     }
 
     [HttpPost("AllocateDate")]
+    [Authorize(Roles ="PanelCoordinator")]
     public async Task<IActionResult> AllocateDate([FromBody] AllocateDateDTO model)
     {
         if (model == null)
@@ -47,6 +48,7 @@ public class PanelCoordinatorController : ControllerBase
     }
 
     [HttpGet("PanelAllocations")]
+    [Authorize(Roles ="PanelCoordinator")]
     public async Task<IActionResult> GetAllAllocatedate()
     {
         try
@@ -68,6 +70,7 @@ public class PanelCoordinatorController : ControllerBase
 
 
     [HttpGet("PanelAllocationById")]
+    [Authorize(Roles ="PanelCoordinator")]
     public async Task<IActionResult> GetPanelAllocationById(int userId)
     {
         try

@@ -9,6 +9,7 @@ using Assignment.Core.Exceptions;
 using Assignment.Core.Handlers.Commands;
 using Assignment.Core.Handlers.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace Assignment.API.Controllers
             _mediator = mediator;
         }
         [HttpPost("CreateSlot")]
+        [Authorize(Roles ="PanelMember")]
         public async Task<IActionResult> CreateSlot([FromBody] SlotDetailsDTO model)
         {
             
@@ -58,6 +60,7 @@ namespace Assignment.API.Controllers
 
 
         [HttpGet("AllSlots")]
+         [Authorize(Roles ="PanelCoordinator")]
         public async Task<IActionResult> GetAllSlot()
         {
             try
@@ -77,11 +80,14 @@ namespace Assignment.API.Controllers
         }
 
         [HttpGet("SlotsById")]
-        public async Task<IActionResult> GetSlotById(int userId)
+        [Authorize(Roles ="PanelMember")]
+        public async Task<IActionResult> GetSlotById()
         {
+            var loggedInUser = User.FindFirst(ClaimTypes.Name)?.Value;
+    
             try
             {
-                var query = new GetSlotByIdQuery(userId);
+                var query = new GetSlotByIdQuery(loggedInUser);
                 var slot = await _mediator.Send(query);
                 return Ok(slot);
             }
@@ -99,6 +105,7 @@ namespace Assignment.API.Controllers
         }
 
         [HttpPatch("UpdateSlotStatus")]
+         [Authorize(Roles ="PanelMember,TAAdmin")]
         public async Task<IActionResult> UpdateSlotStatus(int slotId, string status)
         {
             try
