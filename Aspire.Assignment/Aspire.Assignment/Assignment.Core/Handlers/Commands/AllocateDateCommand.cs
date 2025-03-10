@@ -23,7 +23,7 @@ public class AllocateDateCommandHandler : IRequestHandler<AllocateDateCommand, s
     private readonly IUnitOfWork _unitOfWork;
     private readonly IValidator<AllocateDateDTO> _validator;
 
-    public AllocateDateCommandHandler(IUnitOfWork unitOfWork,IValidator<AllocateDateDTO> validator )
+    public AllocateDateCommandHandler(IUnitOfWork unitOfWork, IValidator<AllocateDateDTO> validator)
     {
         _unitOfWork = unitOfWork;
         _validator = validator;
@@ -36,20 +36,27 @@ public class AllocateDateCommandHandler : IRequestHandler<AllocateDateCommand, s
 
         var user = await Task.FromResult(_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserId == model.PanelMemberID));
         if (user == null)
-            {
-                throw new EntityNotFoundException($"No USER found for {model.PanelMemberID}");
-            }
+        {
+            throw new EntityNotFoundException($"No USER found for {model.PanelMemberID}");
+        }
 
-         var result = _validator.Validate(model);
-            if (!result.IsValid)
-            {
-                var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
-                // Throw InvalidRequestBodyException with the appropriate message
-               throw new InvalidRequestBodyException { Errors = errors };
-            }
+        var role = await Task.FromResult(_unitOfWork.Roles.GetAll().FirstOrDefault(u => u.RoleId == user.RoleId));
+        if (role.RoleName != "PanelMember")
+        {
+            throw new EntityNotFoundException($"{user.Name} is not a Panel Member");
+        }
+
+
+        var result = _validator.Validate(model);
+        if (!result.IsValid)
+        {
+            var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
+            // Throw InvalidRequestBodyException with the appropriate message
+            throw new InvalidRequestBodyException { Errors = errors };
+        }
 
         bool overlapCheck = await _unitOfWork.PanelCoordinator.CheckStartDateAsync(
-           model.StartDate, 
+           model.StartDate,
            model.PanelMemberID
            );
         if (!overlapCheck)

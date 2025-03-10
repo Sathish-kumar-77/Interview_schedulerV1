@@ -24,11 +24,10 @@ namespace Assignment.Core.Data
 
         public IPanelCoordinatorRepository PanelCoordinator => new PanelCoordinatorRepository(_context);
 
-<<<<<<< HEAD
         public ISlotDetailsRepository Slot => new SlotDetailsRepository(_context);
-=======
+
         public IRoleRepository Roles => new RoleRepository(_context);
->>>>>>> 18db4e69d96ac9ea416a3f16eb0bb158ff3b886b
+
 
         public async Task CommitAsync()
         {

@@ -9,7 +9,6 @@ public class Interview
     [Key]
     public int InterviewId { get; set; }
 
-
     [ForeignKey("SlotId")]
     public int SlotId { get; set; }
     public Slot Slot { get; set; }
@@ -17,7 +16,6 @@ public class Interview
     public int CandidateId { get; set; }
     [ForeignKey("UserId")]
     public Users Users { get; set; }
-
     
     public TimeSpan StartTime { get; set; }
     public TimeSpan EndTime { get; set; }
