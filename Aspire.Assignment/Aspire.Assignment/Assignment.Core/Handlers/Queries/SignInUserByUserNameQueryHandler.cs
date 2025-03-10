@@ -29,12 +29,12 @@ namespace Assignment.Providers.Handlers.Queries
     {
         private readonly IUnitOfWork _repository;
         private readonly IMapper _mapper;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IPasswordHasher<Users> _passwordHasher;
         private readonly IConfiguration _configuration;////Ioption to be changes 
    
 
 
-        public SignInUserByUserNameQueryHandler(IUnitOfWork repository, IMapper mapper, IPasswordHasher<User> passwordHasher, IConfiguration configuration)
+        public SignInUserByUserNameQueryHandler(IUnitOfWork repository, IMapper mapper, IPasswordHasher<Users> passwordHasher, IConfiguration configuration)
         {
             _repository = repository;
             _mapper = mapper;
@@ -43,31 +43,47 @@ namespace Assignment.Providers.Handlers.Queries
             
         }
 
-        public async Task<string> Handle(SignInUserByUserNameQuery request, CancellationToken cancellationToken)
-        {
-            var user = await Task.FromResult(_repository.User.GetAll().Where(con=>con.Username.Equals(request.UserName)).FirstOrDefault());
+       public async Task<string> Handle(SignInUserByUserNameQuery request, CancellationToken cancellationToken)
+{
+    var user = _repository.Users.GetAll().FirstOrDefault(con => con.Name == request.UserName);
+    if (user == null)
+    {
+        throw new EntityNotFoundException($"No User found for {request.UserName}");
+    }
 
-            if (user == null)
-            {
-                throw new EntityNotFoundException($"No User found for  {request.UserName}");
-            }
-            PasswordVerificationResult result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.PassWord);
-            if(PasswordVerificationResult.Success!=result)
-            {
-                throw new InvalidcredentialsException($"Invalid credentials");
-            }
-            
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("Authentication:Jwt:Secret"));
-                var tokenDescriptor = new SecurityTokenDescriptor
-                {
-                    Subject = new ClaimsIdentity(new[] { new Claim("userId", request.UserName) }),
-                    Expires = DateTime.UtcNow.AddDays(7),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-                };
-              var token= tokenHandler.CreateToken(tokenDescriptor);
-              return token == null ? throw new EntityNotFoundException($"Faild to generate the token") : tokenHandler.WriteToken(token) ;
-        }
-     
+    if (user.RoleId == null) 
+    {
+        throw new EntityNotFoundException($"User {request.UserName} does not have a role assigned.");
+    }
+
+    var role = _repository.Roles.GetAll().FirstOrDefault(r => r.RoleId == user.RoleId);
+    if (role == null)
+    {
+        throw new EntityNotFoundException($"Role not found for RoleId {user.RoleId}");
+    }
+
+    PasswordVerificationResult result = _passwordHasher.VerifyHashedPassword(user, user.Password, request.PassWord);
+    if (result != PasswordVerificationResult.Success)
+    {
+        throw new InvalidcredentialsException("Invalid credentials");
+    }
+
+    var tokenHandler = new JwtSecurityTokenHandler();
+    var key = Encoding.ASCII.GetBytes(_configuration.GetValue<string>("Authentication:Jwt:Secret"));
+    
+    var tokenDescriptor = new SecurityTokenDescriptor
+    {
+        Subject = new ClaimsIdentity(new[]
+        {
+            new Claim("userId", request.UserName),
+            new Claim("role", role.RoleName)  
+        }),
+        Expires = DateTime.UtcNow.AddDays(7),
+        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+    };
+
+    var token = tokenHandler.CreateToken(tokenDescriptor);
+    return tokenHandler.WriteToken(token);
+}
     }
 }
