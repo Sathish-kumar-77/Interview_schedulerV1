@@ -11,7 +11,6 @@ public class AllocateDate
     public int PanelMemberID { get; set; }
     [ForeignKey("UserId")]
 
-    
     public DateTime StartDate {get; set;}
    
     public DateTime EndDate {get; set;}

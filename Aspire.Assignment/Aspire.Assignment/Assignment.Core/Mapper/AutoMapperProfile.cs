@@ -10,6 +10,8 @@ namespace Assignment.Core.Mapper
         {
             CreateMap<App, AppDTO>();
             CreateMap<Users, UsersDTO>();
+            CreateMap<AllocateDate, AllocateDateDTO>();
+            CreateMap<Slot, SlotDetailsDTO>();
             CreateMap<UpdateUsersDTO, Users>()
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null));
         }

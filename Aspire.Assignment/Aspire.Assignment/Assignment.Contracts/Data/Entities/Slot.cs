@@ -6,7 +6,7 @@ namespace Assignment.Contracts.Data.Entities;
 
 public class Slot
 {
-    [Key]
+         [Key]
         public int SlotId { get; set; }
 
         public DateTime Date { get; set; }

@@ -8,5 +8,7 @@
         void Update(T entity);
         void Delete(object id);
         int Count();
+        Task<IEnumerable<T>> GetAllAsync();
+
     }
 }

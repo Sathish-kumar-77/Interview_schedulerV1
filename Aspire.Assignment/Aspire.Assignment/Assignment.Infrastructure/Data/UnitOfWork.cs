@@ -24,6 +24,8 @@ namespace Assignment.Core.Data
 
         public IPanelCoordinatorRepository PanelCoordinator => new PanelCoordinatorRepository(_context);
 
+        public ISlotDetailsRepository Slot => new SlotDetailsRepository(_context);
+
         public async Task CommitAsync()
         {
             await _context.SaveChangesAsync();

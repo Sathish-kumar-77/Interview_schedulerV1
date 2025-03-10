@@ -5,5 +5,6 @@ namespace Assignment.Contracts.Data.Repositories;
 
 public interface IAllocatedateRepository : IRepository<AllocateDate>
 {
-    Task<IEnumerable<AllocateDate>> GetAllAsync();
+     Task<List<AllocateDate>> GetPanelAllocationByUserId(int UserId);
+    
 }

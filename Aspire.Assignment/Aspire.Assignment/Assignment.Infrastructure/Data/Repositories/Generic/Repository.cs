@@ -49,10 +49,16 @@ namespace Assignment.Core.Data.Repositories
             return _dbSet.AsEnumerable();
         }
 
+       public async Task<IEnumerable<T>> GetAllAsync()
+        {
+            return await _dbSet.ToListAsync();
+        }
+        
         public void Update(T entity)
         {
             _dbSet.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
         }
+        
     }
 }

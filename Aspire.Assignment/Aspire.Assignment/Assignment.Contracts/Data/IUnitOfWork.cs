@@ -9,8 +9,9 @@ namespace Assignment.Contracts.Data
 
         IUsersRepository Users {get; }
         IAllocatedateRepository AllocateDate {get;}
-        
 
+        ISlotDetailsRepository Slot {get;}
+        
         IPanelCoordinatorRepository PanelCoordinator {get;}
         Task CommitAsync();
     }

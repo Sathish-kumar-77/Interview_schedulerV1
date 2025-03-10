@@ -30,7 +30,7 @@ namespace Assignment
                 // Adds a Swagger document with title and version
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "BookToFly",
+                    Title = "InterviewScheduler",
                     Version = "v1"
                 });
                

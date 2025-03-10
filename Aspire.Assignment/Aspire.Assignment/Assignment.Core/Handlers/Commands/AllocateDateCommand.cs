@@ -21,28 +21,40 @@ public class AllocateDateCommand : IRequest<string>
 public class AllocateDateCommandHandler : IRequestHandler<AllocateDateCommand, string>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IValidator<AllocateDateDTO> _validator;
 
-    public AllocateDateCommandHandler(
-        IUnitOfWork unitOfWork
-
-    )
+    public AllocateDateCommandHandler(IUnitOfWork unitOfWork,IValidator<AllocateDateDTO> validator )
     {
         _unitOfWork = unitOfWork;
+        _validator = validator;
 
     }
 
-    public async Task<string> Handle(AllocateDateCommand request, CancellationToken cancellationToken
-    )
+    public async Task<string> Handle(AllocateDateCommand request, CancellationToken cancellationToken)
     {
         AllocateDateDTO model = request.Model;
 
+        var user = await Task.FromResult(_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserId == model.PanelMemberID));
+        if (user == null)
+            {
+                throw new EntityNotFoundException($"No USER found for {model.PanelMemberID}");
+            }
+
+         var result = _validator.Validate(model);
+            if (!result.IsValid)
+            {
+                var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
+                // Throw InvalidRequestBodyException with the appropriate message
+               throw new InvalidRequestBodyException { Errors = errors };
+            }
+
         bool overlapCheck = await _unitOfWork.PanelCoordinator.CheckStartDateAsync(
-           model.StartDate,
+           model.StartDate, 
            model.PanelMemberID
-       );
+           );
         if (!overlapCheck)
         {
-            throw new DuplicateUserException($"Cannot allocate the same date range{model.StartDate}-{model.EndDate} again for the same panel member{model.PanelMemberID}.");
+            throw new InvalidOperationException($"Cannot allocate the same date range{model.StartDate}-{model.EndDate} again for the same panel member{model.PanelMemberID}.");
         }
         else
         {

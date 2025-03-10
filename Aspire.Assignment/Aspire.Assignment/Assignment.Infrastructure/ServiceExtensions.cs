@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Assignment.Contracts.Data.Entities;
+using Assignment.Contracts.DTO;
 
 namespace Assignment.Infrastructure
 {
@@ -29,6 +30,7 @@ namespace Assignment.Infrastructure
         {
             services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
             services.AddScoped<IPasswordHasher<Users>, PasswordHasher<Users>>();
+            
             return services.AddDatabaseContext(configuration).AddUnitOfWork();
         }
     }
