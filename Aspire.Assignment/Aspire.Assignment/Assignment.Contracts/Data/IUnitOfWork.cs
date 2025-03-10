@@ -9,12 +9,9 @@ namespace Assignment.Contracts.Data
 
         IUsersRepository Users {get; }
         IAllocatedateRepository AllocateDate {get;}
-<<<<<<< HEAD
-        IRoleRepository Roles{get;}
-=======
-        
 
->>>>>>> c1fd1ba70b7d9c2d7318c63b179ab640b489ac66
+        IRoleRepository Roles{get;}
+
         IPanelCoordinatorRepository PanelCoordinator {get;}
         Task CommitAsync();
     }
