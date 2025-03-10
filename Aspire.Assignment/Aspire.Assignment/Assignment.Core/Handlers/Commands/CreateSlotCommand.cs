@@ -45,6 +45,13 @@ public class CreateSlotCommandHandler : IRequestHandler<CreateSlotCommand, strin
             throw new EntityNotFoundException("No allocation dates found for the user.");
         }
 
+         var result = _validator.Validate(model);
+        if (!result.IsValid)
+        {
+            var errors = result.Errors.Select(x => x.ErrorMessage).ToArray();
+            throw new InvalidRequestBodyException { Errors = errors };
+        }
+
         var validDate = allocateDate.Any(ad => model.Date >= ad.StartDate && model.Date <= ad.EndDate);
         if (!validDate)
         {

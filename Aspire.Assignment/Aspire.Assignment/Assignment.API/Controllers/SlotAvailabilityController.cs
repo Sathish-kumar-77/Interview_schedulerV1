@@ -34,9 +34,7 @@ namespace Assignment.API.Controllers
 
             try
             {
-                // Create a command to add slot details
                 var command = new CreateSlotCommand(model);
-                // Send the command and await the response
                 var response = await _mediator.Send(command);
                 return CreatedAtAction(nameof(GetSlotById), new { userId = model.UserId }, new BaseResponseDTO
                 {

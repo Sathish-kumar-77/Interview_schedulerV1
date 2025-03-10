@@ -1,5 +1,6 @@
 using System;
 using Assignment.Contracts.Data;
+using Assignment.Contracts.Data.Entities;
 using Assignment.Core.Exceptions;
 using MediatR;
 
@@ -9,7 +10,7 @@ public class UpdateSlotStatusCommand : IRequest<bool>
 {
     public int SlotId { get; }
     public string Status { get; }
-    public UpdateSlotStatusCommand(int sloId,string status)
+    public UpdateSlotStatusCommand(int sloId, string status)
     {
         SlotId = sloId;
         Status = status;
@@ -28,19 +29,24 @@ public class UpdateSlotStatusCommandHandler : IRequestHandler<UpdateSlotStatusCo
     public async Task<bool> Handle(UpdateSlotStatusCommand request, CancellationToken cancellationToken)
     {
         var slot = await Task.FromResult(_unitOfWork.Slot.Get(request.SlotId));
-        if(slot == null)
+        if (slot == null)
         {
             throw new EntityNotFoundException($"Slot with ID {request.SlotId} not found.");
         }
 
-        if (slot.Status == request.Status)
-            {
-               throw new InvalidOperationException($"Slot {slot.SlotId} is already marked as {slot.Status}");
-            }
+        if (slot.Status == "Scheduled")
+        {
+            throw new InvalidOperationException($"Slot {slot.SlotId} is Scheduled Please Raise Cancel request to Admin  ");
+        }
 
-            slot.Status = request.Status;
-            _unitOfWork.Slot.Update(slot);
-             await _unitOfWork.CommitAsync();
-             return true;
+        if (slot.Status == request.Status)
+        {
+            throw new InvalidOperationException($"Slot {slot.SlotId} is already marked as {slot.Status}");
+        }
+
+        slot.Status = request.Status;
+        _unitOfWork.Slot.Update(slot);
+        await _unitOfWork.CommitAsync();
+        return true;
     }
 }

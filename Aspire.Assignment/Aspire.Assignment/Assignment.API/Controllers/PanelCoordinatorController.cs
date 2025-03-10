@@ -37,7 +37,7 @@ public class PanelCoordinatorController : ControllerBase
                 return CreatedAtAction(nameof(GetAllAllocatedate), new { userId = model.PanelMemberID }, new BaseResponseDTO
                 {
                     IsSuccess = true,
-                    Errors = ["Slot created successfully."]
+                    Message = ["Slot created successfully."]
                 });
         }
         catch (Exception ex)
