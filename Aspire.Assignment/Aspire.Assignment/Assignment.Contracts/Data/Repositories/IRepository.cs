@@ -1,4 +1,6 @@
-﻿namespace Assignment.Contracts.Data.Repositories
+﻿using System.Linq.Expressions;
+
+namespace Assignment.Contracts.Data.Repositories
 {
     public interface IRepository<T>
     {
@@ -8,7 +10,11 @@
         void Update(T entity);
         void Delete(object id);
         int Count();
+<<<<<<< HEAD
         Task<IEnumerable<T>> GetAllAsync();
 
+=======
+        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+>>>>>>> 18db4e69d96ac9ea416a3f16eb0bb158ff3b886b
     }
 }
