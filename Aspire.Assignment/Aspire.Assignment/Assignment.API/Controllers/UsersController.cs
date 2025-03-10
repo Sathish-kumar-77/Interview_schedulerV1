@@ -37,6 +37,7 @@ namespace Assignment.Controllers
         [HttpPost]
         [ProducesResponseType(typeof(int), (int)HttpStatusCode.Created)]
         [ProducesErrorResponseType(typeof(BaseResponseDTO))]
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Post([FromBody] CreateUsersDTO model)
         {
             try
@@ -103,6 +104,7 @@ namespace Assignment.Controllers
 
 
         [HttpGet]
+         [Authorize(Roles ="Admin")]
         public async Task<ActionResult<IEnumerable<UsersDTO>>> GetUsers(CancellationToken cancellationToken)
         {
             var users = await _mediator.Send(new GetAllUsersQuery(), cancellationToken);

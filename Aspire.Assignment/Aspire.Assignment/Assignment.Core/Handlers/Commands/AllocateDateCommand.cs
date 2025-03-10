@@ -34,6 +34,7 @@ public class AllocateDateCommandHandler : IRequestHandler<AllocateDateCommand, s
     {
         AllocateDateDTO model = request.Model;
 
+
         var user = await Task.FromResult(_unitOfWork.Users.GetAll().FirstOrDefault(u => u.UserId == model.PanelMemberID));
         if (user == null)
         {

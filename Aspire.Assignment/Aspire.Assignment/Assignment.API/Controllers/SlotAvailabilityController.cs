@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using Assignment.Contracts.DTO;
+using Assignment.Contracts.DTO; 
 using Assignment.Core.Exceptions;
 using Assignment.Core.Handlers.Commands;
 using Assignment.Core.Handlers.Queries;
@@ -27,6 +28,8 @@ namespace Assignment.API.Controllers
         [HttpPost("CreateSlot")]
         public async Task<IActionResult> CreateSlot([FromBody] SlotDetailsDTO model)
         {
+            
+            var loggedInUser = User.Identity.Name;
             if (model == null)
             {
                 return BadRequest("Invalid request: Slot data is missing.");
